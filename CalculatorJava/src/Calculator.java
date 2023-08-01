@@ -9,6 +9,7 @@ import javax.swing.Timer;
 public class Calculator {
 
     JFrame window = new JFrame("Calculator");
+    JPanel globalPanel = new JPanel();
     JPanel boardPanel = new JPanel();
     JPanel buttonPanel = new JPanel();
 
@@ -19,7 +20,7 @@ public class Calculator {
     Calculator() {
 
       /* Window (JFrame) */
-      /* La fenêtre dans son ensemble */
+      /* La fenêtre de l'application */
       window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       window.setSize(360, 500);
       window.setLayout(new BorderLayout());
@@ -27,10 +28,16 @@ public class Calculator {
       window.getContentPane().setBackground(new Color(50, 50, 50));
       window.setResizable(false);
 
-      /* Board Panel (Jpanel) */
+      /* Global Panel (JPanel) */
+      /* La page dans son ensemble */
+      globalPanel.setSize(350, 490);
+      globalPanel.setLayout(new GridLayout(2, 1));
+      // TODO change to gridBagLayout + adjuste the page to put screen on top and number at the bottom
+
+      /* Board Panel (JPanel) */
       /* "L'écran" de la calculette */
       boardPanel.setLayout(new BorderLayout());
-      boardPanel.setBounds(14, 12, 318, 55);
+      boardPanel.setBounds(14, 12, 318, 40);
 
       /* Calcul Field (JLabel) */
       /* Le texte qui apparait dans boardPanel */
@@ -39,7 +46,7 @@ public class Calculator {
       calculField.setHorizontalAlignment(JLabel.RIGHT);
       calculField.setOpaque(true);
 
-      /* Button Panel (Jpanel) */
+      /* Button Panel (JPanel) */
       /* La zone qui contient tout les boutons de la calculette */
       
       buttonPanel.setLayout(new GridLayout(5, 4, 2, 3));
@@ -52,10 +59,11 @@ public class Calculator {
       }
 
       /* Imbrication de tout les éléments */
-      window.add(boardPanel); // Ajoute l'écran à la fenêtre
+      globalPanel.add(boardPanel); // Ajoute l'écran à la page
+      globalPanel.add(buttonPanel); // Ajoute "le clavier" à la page
+      window.add(globalPanel); // Ajoute la page à la fenêtre
       boardPanel.add(calculField); // Ajoute le texte de calcul à l'écran
-      window.add(buttonPanel, BorderLayout.CENTER); // Ajoute "le clavier" à la fenêtre
-      window.pack();
+      
       window.setVisible(true);
     }
 }
