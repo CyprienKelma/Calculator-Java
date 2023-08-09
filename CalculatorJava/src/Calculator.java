@@ -1,9 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import javax.swing.*;
 
-import java.awt.event.ActionListener;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.swing.*;
 import javax.swing.Timer;
 
 public class Calculator {
@@ -96,24 +97,49 @@ public class Calculator {
     public void actionPerformed(ActionEvent e) {
       String command = e.getActionCommand();
 
-      if (calculField.getText().equals("0")) {
+      if (calculField.getText().equals("0") || calculField.getText().equals("0.0")) {
         calculField.setText(command);
       } else if (command.matches("[\\d.]")) {
         calculField.setText(calculField.getText() + command);
       } else if (command.equals("=")) {
         calculateResult();
       } else {
-        calculatePartialValue(command); // When user press "+", "-","x" or "/" button
+        calculatePartialValue(command); // When user press "+", "-", "x" or "/" button
       }
     }
 
     private void calculateResult() {
-      calculField.setText(Double.toString(currentResult));
+      String expression = calculField.getText();
+
+      try {
+        // Create a ScriptEngineManager for the js ".eval()" method for simplify the
+        // calcul
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("graal.js");
+
+        // Evaluate an expression (need to be an Object for using eval() method with the
+        // engine)
+        Object newResult = engine.eval(expression);
+        // Convert newResult to a String
+        String stringResult = newResult.toString();
+        // Then convert the String to a Double
+        double doubleResult = Double.parseDouble(stringResult);
+        // Change the (double) current result value to the new result
+        currentResult = doubleResult;
+
+        // Update the calculField with the result (double to string for the "setText()"
+        // method)
+        calculField.setText(Double.toString(currentResult));
+
+      } catch (Exception e) {
+        calculField.setText("Syntax error");
+      }
     }
 
     private void calculatePartialValue(String command) {
-      // TODO Calculate the value each time there's a new operation
+
     }
 
   }
+
 }
