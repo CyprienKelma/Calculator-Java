@@ -18,7 +18,9 @@ public class Calculator {
   JButton[] buttons = new JButton[16];
   String[] buttonLabels = { "7", "8", "9", "/", "4", "5", "6", "*", "1", "2", "3", "-", ".", "0", "=", "+" };
 
-  private double currentResult = 0.0;
+  String currentInput = "";
+  double currentResult = 0.0;
+  String currentOperator = "";
 
   Calculator() {
 
@@ -97,49 +99,58 @@ public class Calculator {
     public void actionPerformed(ActionEvent e) {
       String command = e.getActionCommand();
 
-      if (calculField.getText().equals("0") || calculField.getText().equals("0.0")) {
-        calculField.setText(command);
-      } else if (command.matches("[\\d.]")) {
-        calculField.setText(calculField.getText() + command);
-      } else if (command.equals("=")) {
-        calculateResult();
+      if (command.matches("[0-9]")) {
+        handleNumber(command);
+      } else if (command.matches("=")) {
+        handleEqual();
       } else {
-        calculatePartialValue(command); // When user press "+", "-", "x" or "/" button
+        handleOperator(command);
       }
     }
 
-    private void calculateResult() {
-      String expression = calculField.getText();
+    private void handleNumber(String number) {
+      currentInput += number;
+      updateDisplay();
+    }
 
-      try {
-        // Create a ScriptEngineManager for the js ".eval()" method for simplify the
-        // calcul
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("graal.js");
+    private void handleOperator(String operator) {
+      currentOperator = operator;
+      currentResult = Double.parseDouble(currentInput);
+      currentInput = "";
+      updateDisplay();
+    }
 
-        // Evaluate an expression (need to be an Object for using eval() method with the
-        // engine)
-        Object newResult = engine.eval(expression);
-        // Convert newResult to a String
-        String stringResult = newResult.toString();
-        // Then convert the String to a Double
-        double doubleResult = Double.parseDouble(stringResult);
-        // Change the (double) current result value to the new result
-        currentResult = doubleResult;
+    private void handleEqual() {
+      Double firstOperand = currentResult;
+      Double secondOperand = Double.parseDouble(currentInput);
 
-        // Update the calculField with the result (double to string for the "setText()"
-        // method)
-        calculField.setText(Double.toString(currentResult));
-
-      } catch (Exception e) {
-        calculField.setText("Syntax error");
+      switch (currentOperator) {
+        case "+":
+          currentResult += secondOperand;
+          break;
+        case "-":
+          currentResult -= secondOperand;
+          break;
+        case "*":
+          currentResult *= secondOperand;
+          break;
+        case "/":
+          if (secondOperand == 0) {
+            currentInput = "Error, cannot divide by 0";
+          } else {
+            currentResult /= secondOperand;
+          }
+        default:
+          break;
       }
+
+      currentInput = Double.toString(currentResult);
+      currentOperator = "";
+      updateDisplay();
     }
 
-    private void calculatePartialValue(String command) {
-
+    private void updateDisplay() {
+      calculField.setText(currentInput.isEmpty() ? "0" : currentInput);
     }
-
   }
-
 }
