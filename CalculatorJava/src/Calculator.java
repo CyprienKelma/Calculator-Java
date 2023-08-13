@@ -126,19 +126,20 @@ public class Calculator {
 
       switch (currentOperator) {
         case "+":
-          currentResult += secondOperand;
+          firstOperand += secondOperand;
           break;
         case "-":
-          currentResult -= secondOperand;
+          firstOperand -= secondOperand;
           break;
         case "*":
-          currentResult *= secondOperand;
+          firstOperand *= secondOperand;
           break;
         case "/":
           if (secondOperand == 0) {
             currentInput = "Error, cannot divide by 0";
+            break;
           } else {
-            currentResult /= secondOperand;
+            firstOperand /= secondOperand;
           }
         default:
           break;
