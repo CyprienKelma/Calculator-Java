@@ -121,25 +121,25 @@ public class Calculator {
     }
 
     private void handleEqual() {
-      Double firstOperand = currentResult;
-      Double secondOperand = Double.parseDouble(currentInput);
+      double firstOperand = currentResult;
+      double secondOperand = Double.parseDouble(currentInput);
 
       switch (currentOperator) {
         case "+":
-          firstOperand += secondOperand;
+          currentResult += secondOperand;
           break;
         case "-":
-          firstOperand -= secondOperand;
+          currentResult -= secondOperand;
           break;
         case "*":
-          firstOperand *= secondOperand;
+          currentResult *= secondOperand;
           break;
         case "/":
           if (secondOperand == 0) {
             currentInput = "Error, cannot divide by 0";
             break;
           } else {
-            firstOperand /= secondOperand;
+            currentResult /= secondOperand;
           }
         default:
           break;
